@@ -1,134 +1,83 @@
-import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle2, Clock, Mail, ArrowLeft, Home } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import { Clock, Mail, CheckCircle, ArrowLeft } from 'lucide-react'
 
-export default function PendingRequest() {
+const steps = [
+    { label: 'Registration submitted', done: true },
+    { label: 'Password set up', done: true },
+    { label: 'Super Admin receives your request', done: true },
+    { label: 'Offline verification of credentials', done: false },
+    { label: 'Admin account activated', done: false },
+]
+
+export default function AdminPendingRequest() {
     const navigate = useNavigate()
-    const location = useLocation()
-    const ngoName = location.state?.ngoName || 'Your NGO'
-    const [checkEmail, setCheckEmail] = useState(false)
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
-                {/* Card */}
-                <Card>
-                    <CardHeader className="text-center">
+            <div className="w-full max-w-lg space-y-4">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="gap-1.5 -ml-2">
+                    <ArrowLeft className="h-4 w-4" /> Back to Home
+                </Button>
+
+                <Card className="border-2">
+                    <CardHeader className="text-center pb-4">
                         <div className="flex justify-center mb-4">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                                <Clock className="h-8 w-8 text-primary" />
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 border-2 border-amber-200">
+                                <Clock className="h-8 w-8 text-amber-600" />
                             </div>
                         </div>
-                        <CardTitle className="text-2xl">Request Submitted!</CardTitle>
-                        <CardDescription className="text-base">
-                            Your NGO registration request has been sent to the Super Admin for verification
+                        <Badge variant="warning" className="mx-auto mb-2 w-fit">Pending Review</Badge>
+                        <CardTitle className="text-2xl">Registration Submitted</CardTitle>
+                        <CardDescription className="text-base leading-relaxed mt-1">
+                            Your admin registration has been submitted successfully.
+                            A Super Admin will review your credentials and activate your account after offline verification.
                         </CardDescription>
                     </CardHeader>
-
                     <CardContent className="space-y-6">
-                        {/* Status Box */}
-                        <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-                            <div className="space-y-3">
-                                <div className="flex items-start gap-3">
-                                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-sm">NGO Details Recorded</p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {ngoName} has been registered in our system
-                                        </p>
+                        {/* Steps */}
+                        <div className="space-y-3">
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide text-xs">Verification Steps</p>
+                            {steps.map((step, i) => (
+                                <div key={i} className="flex items-center gap-3">
+                                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${step.done
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'border-2 border-muted-foreground/30 text-muted-foreground'
+                                        }`}>
+                                        {step.done ? <CheckCircle className="h-4 w-4" /> : i + 1}
                                     </div>
+                                    <span className={`text-sm ${step.done ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>
+                                        {step.label}
+                                    </span>
                                 </div>
-
-                                <Separator className="my-3" />
-
-                                <div className="flex items-start gap-3">
-                                    <Clock className="h-5 w-5 text-amber-500 mt-0.5 shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-sm">Awaiting Super Admin Approval</p>
-                                        <p className="text-xs text-muted-foreground">
-                                            The Super Admin will verify your details (1-3 business days)
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Information */}
-                        <div className="space-y-3 text-sm">
-                            <div className="flex items-start gap-3">
-                                <Mail className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                                <div>
-                                    <p className="font-medium mb-1">Check Your Email</p>
-                                    <p className="text-muted-foreground text-xs leading-relaxed">
-                                        A confirmation email has been sent to your registered email address. You'll receive a notification once your request is approved.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                                <div>
-                                    <p className="font-medium mb-1">Upon Approval</p>
-                                    <p className="text-muted-foreground text-xs leading-relaxed">
-                                        Once approved, you'll be able to set your admin password and access the dashboard immediately.
-                                    </p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
                         <Separator />
 
-                        {/* Status Badge */}
-                        <div className="flex items-center justify-between px-4 py-3 rounded-lg bg-secondary/50">
-                            <span className="text-sm font-medium">Registration Status</span>
-                            <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-                                <Clock className="h-3 w-3 mr-1" />
-                                Pending Review
-                            </Badge>
+                        {/* Timeline */}
+                        <div className="rounded-lg bg-muted/50 p-4 space-y-1">
+                            <p className="text-sm font-medium">Expected Timeline</p>
+                            <p className="text-sm text-muted-foreground">Typically 2–3 business days for offline verification.</p>
+                            <p className="text-sm text-muted-foreground">You will be notified via your registered email once your account is activated.</p>
                         </div>
 
-                        {/* Buttons */}
-                        <div className="space-y-3 pt-4">
-                            <Button
-                                onClick={() => setCheckEmail(!checkEmail)}
-                                variant="outline"
-                                className="w-full"
-                            >
-                                <Mail className="h-4 w-4 mr-2" />
-                                {checkEmail ? "Email Sent ✓" : "Resend Email"}
-                            </Button>
-
-                            <Button
-                                onClick={() => navigate('/')}
-                                className="w-full"
-                            >
-                                <Home className="h-4 w-4 mr-2" />
-                                Back to Landing
-                            </Button>
-                        </div>
-
-                        {/* FAQ */}
-                        <div className="space-y-3 text-xs">
-                            <p className="font-medium">Common Questions:</p>
-                            <div className="space-y-2 text-muted-foreground">
-                                <div>
-                                    <p className="font-medium text-foreground mb-0.5">How long does approval take?</p>
-                                    <p>Typically 1-3 business days. We'll notify you via email as soon as it's approved.</p>
-                                </div>
-                                <div>
-                                    <p className="font-medium text-foreground mb-0.5">What if I don't receive the email?</p>
-                                    <p>Check your spam folder. You can also request a resend above.</p>
-                                </div>
-                                <div>
-                                    <p className="font-medium text-foreground mb-0.5">Need help?</p>
-                                    <p>Contact the Super Admin Support at support@aidly.org</p>
-                                </div>
+                        {/* Contact */}
+                        <div className="rounded-lg border p-4 space-y-2">
+                            <div className="flex items-center gap-2">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm font-medium">Need help?</span>
                             </div>
+                            <p className="text-sm text-muted-foreground">Contact the Aidly Super Admin team:</p>
+                            <p className="text-sm font-medium text-primary">admin@aidly.in</p>
                         </div>
+
+                        <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
+                            Return to Home
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

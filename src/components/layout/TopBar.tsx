@@ -1,4 +1,4 @@
-import { Bell } from 'lucide-react'
+import { Bell, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { useNavigate } from 'react-router-dom'
+import { useTheme } from '@/contexts/ThemeContext'
 
 type Role = 'govt' | 'ngo' | 'super'
 
@@ -19,6 +20,8 @@ const roleConfig: Record<Role, { name: string; org: string; initials: string }> 
 export function TopBar({ role, title }: { role: Role; title: string }) {
     const navigate = useNavigate()
     const config = roleConfig[role]
+    const { theme, toggleTheme } = useTheme()
+    const prefix = role === 'govt' ? '/gov' : role === 'ngo' ? '/ngo' : '/super'
 
     return (
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
@@ -28,7 +31,20 @@ export function TopBar({ role, title }: { role: Role; title: string }) {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+                {/* Dark/Light mode toggle */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleTheme}
+                    title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                    className="text-muted-foreground hover:text-foreground"
+                >
+                    {theme === 'dark'
+                        ? <Sun className="h-[1.1rem] w-[1.1rem]" />
+                        : <Moon className="h-[1.1rem] w-[1.1rem]" />}
+                </Button>
+
                 {/* Notification bell */}
                 <Button variant="ghost" size="icon" className="relative">
                     <Bell className="h-5 w-5" />
@@ -56,8 +72,17 @@ export function TopBar({ role, title }: { role: Role; title: string }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Profile Settings</DropdownMenuItem>
-                        <DropdownMenuItem>Notifications</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(`${prefix}/settings`)}>
+                            Profile Settings
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(`${prefix}/settings`)}>
+                            Notifications
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={toggleTheme} className="gap-2">
+                            {theme === 'dark'
+                                ? <><Sun className="h-3.5 w-3.5" /> Light Mode</>
+                                : <><Moon className="h-3.5 w-3.5" /> Dark Mode</>}
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
@@ -68,7 +93,7 @@ export function TopBar({ role, title }: { role: Role; title: string }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Role badge - visible only on larger screens */}
+                {/* Role badge */}
                 <Badge variant={role === 'super' ? 'default' : role === 'govt' ? 'secondary' : 'outline'} className="hidden lg:flex">
                     {role === 'govt' ? 'Gov Admin' : role === 'ngo' ? 'NGO Admin' : 'Super Admin'}
                 </Badge>

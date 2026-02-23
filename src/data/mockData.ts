@@ -167,4 +167,48 @@ export const mockJoinRequests: JoinRequest[] = [
     { id: 'jr1', volunteer_name: 'Pooja Iyer', email: 'pooja@example.com', skills: ['Medical', 'First Aid'], rating_avg: 4.2, total_calls: 18, requested_at: '2026-02-21', status: 'pending' },
     { id: 'jr2', volunteer_name: 'Kiran Bhat', email: 'kiran@example.com', skills: ['Rescue', 'Logistics'], rating_avg: 3.9, total_calls: 7, requested_at: '2026-02-22', status: 'pending' },
     { id: 'jr3', volunteer_name: 'Maya Das', email: 'maya@example.com', skills: ['Counseling'], rating_avg: 4.5, total_calls: 32, requested_at: '2026-02-20', status: 'approved' },
+    { id: 'jr4', volunteer_name: 'Sanjay Verma', email: 'sanjay@example.com', skills: ['Logistics', 'Security'], rating_avg: 3.8, total_calls: 14, requested_at: '2026-02-18', status: 'approved' },
+    { id: 'jr5', volunteer_name: 'Nandita Roy', email: 'nandita@example.com', skills: ['Medical'], rating_avg: 2.1, total_calls: 10, requested_at: '2026-02-15', status: 'rejected' },
+]
+
+// ── Mock Volunteer Feedback ────────────────────────────────────────────────────
+export interface VolunteerFeedback {
+    id: string
+    volunteer_id: string
+    rated_by: string       // name of caller who left feedback
+    rating: number         // 1–5
+    feedback: string
+    call_type: string
+    created_at: string
+}
+
+export const mockFeedbacks: VolunteerFeedback[] = [
+    // Arjun Sharma (v1) — high rated
+    { id: 'f1', volunteer_id: 'v1', rated_by: 'Riya Kapoor', rating: 5, feedback: 'Arjun was incredibly calm and helpful during the flood evacuation. Arrived quickly and coordinated well with the local team.', call_type: 'Disaster Response', created_at: '2026-02-18' },
+    { id: 'f2', volunteer_id: 'v1', rated_by: 'Mohit Sharma', rating: 5, feedback: 'Outstanding first aid skills. He stayed on the line until ambulance arrived. Extremely professional.', call_type: 'Medical Emergency', created_at: '2026-02-10' },
+    { id: 'f3', volunteer_id: 'v1', rated_by: 'Sara Thomas', rating: 4, feedback: 'Very responsive and knowledgeable. Minor delay in arrival but the quality of help was excellent.', call_type: 'Rescue', created_at: '2026-01-28' },
+    { id: 'f4', volunteer_id: 'v1', rated_by: 'Dilip Jain', rating: 5, feedback: 'Provided excellent rescue assistance during the earthquake. Would definitely call again.', call_type: 'Earthquake Relief', created_at: '2026-01-15' },
+    // Priya Patel (v2) — high rated
+    { id: 'f5', volunteer_id: 'v2', rated_by: 'Ananya Gupta', rating: 5, feedback: "Priya's counseling helped me cope after the disaster. Compassionate and very professional.", call_type: 'Psychological Support', created_at: '2026-02-20' },
+    { id: 'f6', volunteer_id: 'v2', rated_by: 'Rahul Mehta', rating: 4, feedback: 'Very helpful medical advice. Knew exactly what to do in the situation.', call_type: 'Medical Emergency', created_at: '2026-02-12' },
+    { id: 'f7', volunteer_id: 'v2', rated_by: 'Sunita Chari', rating: 5, feedback: 'Exceptional care and immediate response. She is a gem of a volunteer.', call_type: 'Medical Emergency', created_at: '2026-01-30' },
+    // Deepa Nair (v6) — top rated
+    { id: 'f8', volunteer_id: 'v6', rated_by: 'Vinod Kumar', rating: 5, feedback: 'Deepa is the best volunteer I have ever seen. Handled multiple patients simultaneously with calm precision.', call_type: 'Disaster Response', created_at: '2026-02-22' },
+    { id: 'f9', volunteer_id: 'v6', rated_by: 'Lalita Menon', rating: 5, feedback: "Her medical training really showed. She saved my neighbour's life during the cyclone.", call_type: 'Medical Emergency', created_at: '2026-02-14' },
+    { id: 'f10', volunteer_id: 'v6', rated_by: 'George Joseph', rating: 5, feedback: 'Amazing counselor and rescue expert. Deeply committed to the cause.', call_type: 'Psychological Support', created_at: '2026-01-25' },
+    // Vikram Singh (v5) — low rated
+    { id: 'f11', volunteer_id: 'v5', rated_by: 'Pradeep Nair', rating: 2, feedback: 'Late to arrive and seemed unprepared for the situation. Needs more training.', call_type: 'Security', created_at: '2026-02-05' },
+    { id: 'f12', volunteer_id: 'v5', rated_by: 'Asha Reddy', rating: 3, feedback: 'Showed up but was not confident handling the crowd. Expected more.', call_type: 'Security', created_at: '2026-01-20' },
+    { id: 'f13', volunteer_id: 'v5', rated_by: 'Mohan Lal', rating: 3, feedback: 'Average performance. Did the minimum required. Communication was poor.', call_type: 'Security', created_at: '2026-01-10' },
+    // Anil Verma (v9) — very low rated
+    { id: 'f14', volunteer_id: 'v9', rated_by: 'Bindu Nair', rating: 2, feedback: 'Very disappointing. Did not show up on time and gave incorrect transportation directions.', call_type: 'Logistics', created_at: '2026-02-19' },
+    { id: 'f15', volunteer_id: 'v9', rated_by: 'Ramesh Kumar', rating: 2, feedback: 'Was not equipped to handle the task. Seemed confused throughout.', call_type: 'Logistics', created_at: '2026-02-06' },
+    { id: 'f16', volunteer_id: 'v9', rated_by: 'Supriya Das', rating: 2, feedback: 'Poor communication and disorganised. Would not recommend.', call_type: 'Logistics', created_at: '2026-01-22' },
+    // Kavitha Menon (v8)
+    { id: 'f17', volunteer_id: 'v8', rated_by: 'Thomas Kurian', rating: 5, feedback: "Kavitha's first aid was impeccable. Super professional and calm under pressure.", call_type: 'Medical Emergency', created_at: '2026-02-16' },
+    { id: 'f18', volunteer_id: 'v8', rated_by: 'Meera Pillai', rating: 5, feedback: 'Brilliant during the cyclone response. Organised the injured systematically.', call_type: 'Disaster Response', created_at: '2026-01-28' },
+    { id: 'f19', volunteer_id: 'v8', rated_by: 'Sujit Dev', rating: 4, feedback: 'Very capable volunteer. A bit quiet but highly effective.', call_type: 'Medical Emergency', created_at: '2026-01-12' },
+    // Lakshmi Rao (v10)
+    { id: 'f20', volunteer_id: 'v10', rated_by: 'Kavya Bhat', rating: 5, feedback: 'Excellent rescue coordination. Lakshmi made sure everyone was safe before leaving.', call_type: 'Rescue', created_at: '2026-02-17' },
+    { id: 'f21', volunteer_id: 'v10', rated_by: 'Naresh Reddy', rating: 4, feedback: 'Good first aid response. Arrived quickly and handled the situation well.', call_type: 'Medical Emergency', created_at: '2026-02-03' },
 ]

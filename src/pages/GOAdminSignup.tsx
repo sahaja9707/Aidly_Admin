@@ -4,329 +4,78 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { Shield, ArrowLeft } from 'lucide-react'
 
 export default function GOAdminSignup() {
     const navigate = useNavigate()
+    const [form, setForm] = useState({ fullName: '', email: '', bodyName: '', state: '', designation: '' })
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
-    const [step, setStep] = useState(1)
 
-    const [formData, setFormData] = useState({
-        // Government Details
-        departmentName: '',
-        city: '',
-        pincode: '',
-        
-        // Admin Contact Details
-        adminName: '',
-        adminEmail: '',
-        adminPhone: '',
-        designation: '',
-        adminDescription: '',
-    })
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-    const validateStep1 = () => {
-        if (!formData.departmentName.trim()) {
-            setError('Department name is required')
-            return false
-        }
-        if (!formData.city.trim()) {
-            setError('City is required')
-            return false
-        }
-        if (!formData.pincode.trim()) {
-            setError('Pincode is required')
-            return false
-        }
-        if (!/^\d{6}$/.test(formData.pincode)) {
-            setError('Please enter a valid 6-digit pincode')
-            return false
-        }
-        return true
-    }
-
-    const validateStep2 = () => {
-        if (!formData.adminName.trim()) {
-            setError('Admin name is required')
-            return false
-        }
-        if (!formData.adminEmail.trim()) {
-            setError('Email is required')
-            return false
-        }
-        if (!formData.adminEmail.includes('@')) {
-            setError('Please enter a valid email address')
-            return false
-        }
-        if (!formData.adminPhone.trim()) {
-            setError('Phone number is required')
-            return false
-        }
-        if (!/^\d{10}$/.test(formData.adminPhone.replace(/\D/g, ''))) {
-            setError('Please enter a valid 10-digit phone number')
-            return false
-        }
-        if (!formData.designation.trim()) {
-            setError('Designation is required')
-            return false
-        }
-        return true
-    }
-
-    const handleNextStep = () => {
-        setError('')
-        if (step === 1) {
-            if (validateStep1()) {
-                setStep(2)
-            }
-        }
-    }
-
-    const handlePreviousStep = () => {
-        setError('')
-        setStep(1)
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handle = async (e: React.FormEvent) => {
         e.preventDefault()
-        setError('')
-
-        if (!validateStep2()) {
-            return
-        }
-
         setLoading(true)
-        // Simulate submission delay
-        await new Promise(r => setTimeout(r, 1500))
+        await new Promise(r => setTimeout(r, 800))
         setLoading(false)
-
-        // TODO: Replace with actual API call to submit Government Admin request
-        // On success, navigate directly to password setup (assuming super admin approved)
-        navigate('/gov-admin-password-setup', { state: { departmentName: formData.departmentName } })
+        navigate('/gov-admin-password-setup')
     }
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4 py-8">
-            <div className="w-full max-w-2xl">
-                {/* Back Button */}
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/')}
-                    className="gap-1.5 -ml-2 mb-8"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Landing
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+            <div className="w-full max-w-md space-y-4">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/gov-admin-hub')} className="gap-1.5 -ml-2">
+                    <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
-
-                {/* Main Card */}
-                <Card>
-                    <CardHeader>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary mb-4">
-                            <span className="text-sm font-bold text-primary-foreground">A</span>
+                <Card className="border-2">
+                    <CardHeader className="text-center pb-4">
+                        <div className="flex justify-center mb-4">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                                <Shield className="h-6 w-6 text-primary" />
+                            </div>
                         </div>
-                        <CardTitle className="text-2xl">Register Your Government Department</CardTitle>
-                        <CardDescription>
-                            {step === 1
-                                ? 'Step 1 of 2 — Enter your department details and location information'
-                                : 'Step 2 of 2 — Provide admin contact information'}
-                        </CardDescription>
-
-                        {/* Progress */}
-                        <div className="mt-6 flex gap-2">
-                            {[1, 2].map((s) => (
-                                <div
-                                    key={s}
-                                    className={`h-2 flex-1 rounded-full transition-colors ${
-                                        step >= s ? 'bg-primary' : 'bg-secondary'
-                                    }`}
-                                />
-                            ))}
-                        </div>
+                        <Badge variant="default" className="mx-auto mb-2">Government Official</Badge>
+                        <CardTitle className="text-xl">Register Government Body</CardTitle>
+                        <CardDescription>Submit your details for Super Admin review and official verification.</CardDescription>
                     </CardHeader>
-
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {step === 1 ? (
-                                <>
-                                    {/* Step 1: Government Department Details */}
-                                    
-                                    <div className="space-y-2">
-                                        <Label htmlFor="departmentName">Department Name *</Label>
-                                        <Input
-                                            id="departmentName"
-                                            name="departmentName"
-                                            placeholder="e.g., Disaster Management Department"
-                                            value={formData.departmentName}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="city">City / District *</Label>
-                                            <Input
-                                                id="city"
-                                                name="city"
-                                                placeholder="e.g., Mumbai, Delhi"
-                                                value={formData.city}
-                                                onChange={handleInputChange}
-                                                disabled={loading}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="pincode">Pincode *</Label>
-                                            <Input
-                                                id="pincode"
-                                                name="pincode"
-                                                placeholder="6-digit pincode"
-                                                value={formData.pincode}
-                                                onChange={handleInputChange}
-                                                disabled={loading}
-                                                maxLength={6}
-                                            />
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    {/* Step 2: Admin Contact Details */}
-                                    
-                                    <div className="space-y-2">
-                                        <Label htmlFor="adminName">Admin Name *</Label>
-                                        <Input
-                                            id="adminName"
-                                            name="adminName"
-                                            placeholder="Full name of the admin"
-                                            value={formData.adminName}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="adminEmail">Email Address *</Label>
-                                            <Input
-                                                id="adminEmail"
-                                                name="adminEmail"
-                                                type="email"
-                                                placeholder="admin@department.gov.in"
-                                                value={formData.adminEmail}
-                                                onChange={handleInputChange}
-                                                disabled={loading}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="adminPhone">Phone Number *</Label>
-                                            <Input
-                                                id="adminPhone"
-                                                name="adminPhone"
-                                                placeholder="10-digit phone number"
-                                                value={formData.adminPhone}
-                                                onChange={handleInputChange}
-                                                disabled={loading}
-                                                maxLength={15}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="designation">Designation / Position *</Label>
-                                        <Input
-                                            id="designation"
-                                            name="designation"
-                                            placeholder="e.g., District Chief, Officer"
-                                            value={formData.designation}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="adminDescription">About the Admin (Optional)</Label>
-                                        <Textarea
-                                            id="adminDescription"
-                                            name="adminDescription"
-                                            placeholder="Brief description of the admin's role and experience"
-                                            value={formData.adminDescription}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                            rows={4}
-                                        />
-                                    </div>
-                                </>
-                            )}
-
-                            {/* Error */}
-                            {error && (
-                                <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-3 flex gap-2">
-                                    <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
-                                    <p className="text-sm text-destructive">{error}</p>
+                        <form onSubmit={handle} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2">
+                                    <Label>Full Name *</Label>
+                                    <Input placeholder="Your name" value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} required />
                                 </div>
-                            )}
-
-                            {/* Buttons */}
-                            <Separator className="my-6" />
-                            <div className="flex gap-3">
-                                {step === 2 && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={handlePreviousStep}
-                                        disabled={loading}
-                                    >
-                                        Previous
-                                    </Button>
-                                )}
-                                {step === 1 ? (
-                                    <Button
-                                        type="button"
-                                        onClick={handleNextStep}
-                                        disabled={loading}
-                                        className="flex-1"
-                                    >
-                                        Next
-                                    </Button>
-                                ) : (
-                                    <Button type="submit" disabled={loading} className="flex-1">
-                                        {loading ? (
-                                            <>
-                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                                Sending Request...
-                                            </>
-                                        ) : (
-                                            'Send Request to Super Admin'
-                                        )}
-                                    </Button>
-                                )}
+                                <div className="space-y-2">
+                                    <Label>Designation *</Label>
+                                    <Input placeholder="e.g. District Collector" value={form.designation} onChange={e => setForm(f => ({ ...f, designation: e.target.value }))} required />
+                                </div>
                             </div>
-
-                            {/* Support */}
-                            <div className="text-center text-xs text-muted-foreground">
-                                <p>
-                                    Already have an account?{' '}
-                                    <button
-                                        type="button"
-                                        onClick={() => navigate('/gov-admin-login')}
-                                        className="text-primary hover:underline font-medium"
-                                    >
-                                        Sign in
-                                    </button>
-                                </p>
+                            <div className="space-y-2">
+                                <Label>Official Email *</Label>
+                                <Input type="email" placeholder="you@state.gov.in" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
                             </div>
+                            <div className="space-y-2">
+                                <Label>Government Body Name *</Label>
+                                <Input placeholder="e.g. Kerala SDMA" value={form.bodyName} onChange={e => setForm(f => ({ ...f, bodyName: e.target.value }))} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>State *</Label>
+                                <Input placeholder="e.g. Kerala" value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))} required />
+                            </div>
+                            <div className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
+                                Government registrations require offline credential verification. You'll be notified via official email within 2–3 business days.
+                            </div>
+                            <Button type="submit" className="w-full" disabled={loading}>
+                                {loading ? 'Submitting...' : 'Submit Registration'}
+                            </Button>
                         </form>
                     </CardContent>
                 </Card>
+                <p className="text-xs text-center text-muted-foreground">
+                    Already registered?{' '}
+                    <button className="text-primary hover:underline underline-offset-2" onClick={() => navigate('/gov-admin-login')}>
+                        Sign in instead
+                    </button>
+                </p>
             </div>
         </div>
     )

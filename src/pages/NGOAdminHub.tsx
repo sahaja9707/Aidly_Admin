@@ -1,81 +1,71 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, LogIn, UserPlus, ArrowRight } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Building2, LogIn, UserPlus, ArrowLeft } from 'lucide-react'
 
 export default function NGOAdminHub() {
     const navigate = useNavigate()
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl">
-                {/* Back Button */}
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/')}
-                    className="gap-1.5 -ml-2 mb-8"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Admin Type Selection
+            <div className="w-full max-w-md space-y-5">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="gap-1.5 -ml-2">
+                    <ArrowLeft className="h-4 w-4" /> Back to Home
                 </Button>
 
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold tracking-tight mb-4">
-                        NGO Admin Portal
-                    </h1>
-                    <p className="text-muted-foreground text-lg">
-                        Manage your volunteers and coordinate disaster response
+                <div className="text-center space-y-2">
+                    <div className="flex justify-center">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                            <Building2 className="h-7 w-7 text-primary" />
+                        </div>
+                    </div>
+                    <Badge variant="secondary" className="mx-auto">Partner NGO</Badge>
+                    <h1 className="text-2xl font-bold">NGO Admin Portal</h1>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                        Manage your NGO's volunteer network, application status, campaigns, and organisation profile.
                     </p>
                 </div>
 
-                {/* CTA Options */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {/* Login Option */}
-                    <button
-                        onClick={() => navigate('/admin-login')}
-                        className="group relative overflow-hidden rounded-xl border-2 border-border p-8 transition-all duration-200 hover:border-primary hover:shadow-lg bg-card"
-                    >
-                        <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-                        <div className="relative flex flex-col items-center text-center gap-4">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                                <LogIn className="h-8 w-8 text-primary" />
+                <div className="space-y-3">
+                    <Card className="border-2 cursor-pointer hover:border-primary transition-all" onClick={() => navigate('/admin-login')}>
+                        <CardHeader className="pb-2 pt-5">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                    <LogIn className="h-4 w-4 text-primary" />
+                                </div>
+                                <CardTitle className="text-base">Sign In</CardTitle>
                             </div>
-                            <div>
-                                <h3 className="text-xl font-semibold mb-2">Existing Admin?</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Sign in to your account
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-2 text-primary font-medium">
-                                Log In
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </div>
-                        </div>
-                    </button>
+                        </CardHeader>
+                        <CardContent className="pb-5">
+                            <CardDescription>Already registered? Access your NGO admin panel.</CardDescription>
+                            <Button className="w-full mt-4" onClick={e => { e.stopPropagation(); navigate('/admin-login') }}>
+                                Sign In to NGO Panel
+                            </Button>
+                        </CardContent>
+                    </Card>
 
-                    {/* Signup Option */}
-                    <button
-                        onClick={() => navigate('/admin-signup')}
-                        className="group relative overflow-hidden rounded-xl border-2 border-primary/50 p-8 transition-all duration-200 hover:border-primary hover:shadow-lg bg-primary/5"
-                    >
-                        <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/15 transition-colors" />
-                        <div className="relative flex flex-col items-center text-center gap-4">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors">
-                                <UserPlus className="h-8 w-8 text-primary" />
+                    <Card className="border-2 cursor-pointer hover:border-primary transition-all" onClick={() => navigate('/admin-signup')}>
+                        <CardHeader className="pb-2 pt-5">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+                                    <UserPlus className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <CardTitle className="text-base">Register NGO</CardTitle>
                             </div>
-                            <div>
-                                <h3 className="text-xl font-semibold mb-2">New NGO?</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Register your organization
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-2 text-primary font-medium">
-                                Sign Up
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </div>
-                        </div>
-                    </button>
+                        </CardHeader>
+                        <CardContent className="pb-5">
+                            <CardDescription>First time? Submit your NGO registration for Super Admin approval.</CardDescription>
+                            <Button variant="outline" className="w-full mt-4" onClick={e => { e.stopPropagation(); navigate('/admin-signup') }}>
+                                Register Your NGO
+                            </Button>
+                        </CardContent>
+                    </Card>
                 </div>
+
+                <p className="text-center text-xs text-muted-foreground">
+                    New registrations require offline verification and Super Admin approval before access is granted.
+                </p>
             </div>
         </div>
     )

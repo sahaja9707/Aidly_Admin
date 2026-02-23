@@ -31,6 +31,7 @@ import NgoProfile from '@/pages/ngo/NgoProfile'
 
 // Shared
 import Leaderboard from '@/pages/shared/Leaderboard'
+import Settings from '@/pages/Settings'
 
 // Super Admin Pages
 import SuperDashboard from '@/pages/super/SuperDashboard'
@@ -39,11 +40,6 @@ import SuperRegistrations from '@/pages/super/SuperRegistrations'
 import SuperModeration from '@/pages/super/SuperModeration'
 import SuperAuditLog from '@/pages/super/SuperAuditLog'
 
-// Simple Settings placeholder
-function Settings() {
-  return <div className="py-10 text-center text-muted-foreground">Settings page coming soon.</div>
-}
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -51,20 +47,20 @@ export default function App() {
         {/* Landing & Auth */}
         <Route path="/" element={<Landing />} />
         <Route path="/roles" element={<RoleSelection />} />
-        
+
         {/* NGO Admin */}
         <Route path="/ngo-admin-hub" element={<NGOAdminHub />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-signup" element={<AdminSignup />} />
         <Route path="/admin-password-setup" element={<AdminPasswordSetup />} />
         <Route path="/admin-pending-request" element={<AdminPendingRequest />} />
-        
+
         {/* Government Admin */}
         <Route path="/gov-admin-hub" element={<GOAdminHub />} />
         <Route path="/gov-admin-login" element={<GOAdminLogin />} />
         <Route path="/gov-admin-signup" element={<GOAdminSignup />} />
         <Route path="/gov-admin-password-setup" element={<GOAdminPasswordSetup />} />
-        
+
         {/* Role-based */}
         <Route path="/login/:role" element={<Login />} />
         <Route path="/pending" element={<PendingVerification />} />
