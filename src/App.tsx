@@ -2,6 +2,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 // Auth Pages
 import RoleSelection from '@/pages/RoleSelection'
+import Landing from '@/pages/Landing'
+import NGOAdminHub from '@/pages/NGOAdminHub'
+import GOAdminHub from '@/pages/GOAdminHub'
+import AdminLogin from '@/pages/AdminLogin'
+import AdminSignup from '@/pages/AdminSignup'
+import AdminPasswordSetup from '@/pages/AdminPasswordSetup'
+import GOAdminLogin from '@/pages/GOAdminLogin'
+import GOAdminSignup from '@/pages/GOAdminSignup'
+import GOAdminPasswordSetup from '@/pages/GOAdminPasswordSetup'
+import AdminPendingRequest from '@/pages/AdminPendingRequest'
 import Login from '@/pages/Login'
 import PendingVerification from '@/pages/PendingVerification'
 
@@ -38,8 +48,24 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Landing */}
-        <Route path="/" element={<RoleSelection />} />
+        {/* Landing & Auth */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/roles" element={<RoleSelection />} />
+        
+        {/* NGO Admin */}
+        <Route path="/ngo-admin-hub" element={<NGOAdminHub />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-signup" element={<AdminSignup />} />
+        <Route path="/admin-password-setup" element={<AdminPasswordSetup />} />
+        <Route path="/admin-pending-request" element={<AdminPendingRequest />} />
+        
+        {/* Government Admin */}
+        <Route path="/gov-admin-hub" element={<GOAdminHub />} />
+        <Route path="/gov-admin-login" element={<GOAdminLogin />} />
+        <Route path="/gov-admin-signup" element={<GOAdminSignup />} />
+        <Route path="/gov-admin-password-setup" element={<GOAdminPasswordSetup />} />
+        
+        {/* Role-based */}
         <Route path="/login/:role" element={<Login />} />
         <Route path="/pending" element={<PendingVerification />} />
 
