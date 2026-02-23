@@ -47,12 +47,10 @@ export interface AdminUser {
 
 export interface AdminRegistration {
     id: string
-    user_id: string
     full_name: string
     email: string
     requested_role: 'govt_admin' | 'ngo_admin'
-    organization_name: string
-    ngo_id?: string
+    org_name: string
     status: Status
     created_at: string
 }
@@ -111,10 +109,10 @@ export const mockNGOs: NGO[] = [
 
 // ── Mock Registrations ─────────────────────────────────────────────────────────
 export const mockRegistrations: AdminRegistration[] = [
-    { id: 'r1', user_id: 'u10', full_name: 'Suresh Pillai', email: 'suresh@kerala.gov.in', requested_role: 'govt_admin', organization_name: 'Kerala Disaster Management Authority', status: 'pending', created_at: '2026-02-20' },
-    { id: 'r2', user_id: 'u11', full_name: 'Meena Kumari', email: 'meena@helpindia.org', requested_role: 'ngo_admin', organization_name: 'HelpIndia NGO', ngo_id: 'n1', status: 'pending', created_at: '2026-02-21' },
-    { id: 'r3', user_id: 'u12', full_name: 'Ramesh Chandra', email: 'ramesh@odisha.gov.in', requested_role: 'govt_admin', organization_name: 'Odisha SDMA', status: 'approved', created_at: '2026-02-10' },
-    { id: 'r4', user_id: 'u13', full_name: 'Preethi Soman', email: 'preethi@carefirst.in', requested_role: 'ngo_admin', organization_name: 'CareFirst', ngo_id: 'n3', status: 'rejected', created_at: '2026-02-05' },
+    { id: 'r1', full_name: 'Suresh Pillai', email: 'suresh@kerala.gov.in', requested_role: 'govt_admin', org_name: 'Kerala Disaster Management Authority', status: 'pending', created_at: '2026-02-20' },
+    { id: 'r2', full_name: 'Meena Kumari', email: 'meena@helpindia.org', requested_role: 'ngo_admin', org_name: 'HelpIndia NGO', status: 'pending', created_at: '2026-02-21' },
+    { id: 'r3', full_name: 'Ramesh Chandra', email: 'ramesh@odisha.gov.in', requested_role: 'govt_admin', org_name: 'Odisha SDMA', status: 'approved', created_at: '2026-02-10' },
+    { id: 'r4', full_name: 'Preethi Soman', email: 'preethi@carefirst.in', requested_role: 'ngo_admin', org_name: 'CareFirst', status: 'rejected', created_at: '2026-02-05' },
 ]
 
 // ── Mock Alerts ────────────────────────────────────────────────────────────────

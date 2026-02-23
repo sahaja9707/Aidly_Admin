@@ -1,11 +1,58 @@
+import { useEffect, useState } from 'react'
 import { mockVolunteers, mockNGOs, mockAlerts, mockRegistrations, mockAdminUsers } from '@/data/mockData'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Users, Building2, Shield, Bell, Activity, TrendingUp } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Separator } from '@/components/ui/separator'
+import { getAllUsers, suspendUser, unsuspendUser } from '@/lib/supabase'
 
 export default function SuperDashboard() {
+    const [users, setUsers] = useState<any[]>([])
+
+    useEffect(() => {
+        const loadUsers = async () => {
+            const { data, error } = await getAllUsers()
+
+            if (error) {
+                console.error(error)
+                return
+            }
+
+            setUsers(data || [])
+        }
+
+        loadUsers()
+    }, [])
+
+    const handleSuspend = async (id: string) => {
+        const { error } = await suspendUser(id)
+
+        if (!error) {
+            setUsers(prev =>
+                prev.map(user =>
+                    user.id === id
+                        ? { ...user, is_suspended: true }
+                        : user
+                )
+            )
+        }
+    }
+
+    const handleUnsuspend = async (id: string) => {
+        const { error } = await unsuspendUser(id)
+
+        if (!error) {
+            setUsers(prev =>
+                prev.map(user =>
+                    user.id === id
+                        ? { ...user, is_suspended: false }
+                        : user
+                )
+            )
+        }
+    }
+
     const totalUsers = mockVolunteers.length + mockAdminUsers.length
     const totalNGOs = mockNGOs.length
     const totalGovt = mockAdminUsers.filter(u => u.role === 'govt').length

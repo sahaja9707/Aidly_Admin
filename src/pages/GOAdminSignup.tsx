@@ -5,17 +5,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Shield, ArrowLeft } from 'lucide-react'
+import { Shield, ArrowLeft, AlertCircle } from 'lucide-react'
+import { createRegistration } from '@/lib/supabase'
 
 export default function GOAdminSignup() {
     const navigate = useNavigate()
     const [form, setForm] = useState({ fullName: '', email: '', bodyName: '', state: '', designation: '' })
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     const handle = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        await new Promise(r => setTimeout(r, 800))
+        setError('')
+
+        const { error: dbError } = await createRegistration({
+            full_name: form.fullName,
+            email: form.email,
+            requested_role: 'govt_admin',
+            org_name: `${form.bodyName} — ${form.state}`,
+        })
+
+        if (dbError) {
+            setError('Registration failed. Please try again or check if your email is already registered.')
+            setLoading(false)
+            return
+        }
+
+        sessionStorage.setItem('aidly_signup_email', form.email)
         setLoading(false)
         navigate('/gov-admin-password-setup')
     }
@@ -68,6 +85,12 @@ export default function GOAdminSignup() {
                                 {loading ? 'Submitting...' : 'Submit Registration'}
                             </Button>
                         </form>
+                        {error && (
+                            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                <AlertCircle className="h-4 w-4 shrink-0" />
+                                {error}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
                 <p className="text-xs text-center text-muted-foreground">

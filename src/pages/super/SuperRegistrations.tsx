@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { mockRegistrations, mockNGOs, type AdminRegistration } from '@/data/mockData'
+import { mockRegistrations } from '@/data/mockData'
+import { type AdminRegistration } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -35,7 +36,6 @@ export default function SuperRegistrations() {
             </TableHeader>
             <TableBody>
                 {data.map(r => {
-                    const linkedNGO = mockNGOs.find(n => n.id === r.ngo_id)
                     return (
                         <TableRow key={r.id}>
                             <TableCell>
@@ -49,13 +49,9 @@ export default function SuperRegistrations() {
                                     {r.requested_role === 'govt_admin' ? 'Gov Admin' : 'NGO Admin'}
                                 </Badge>
                             </TableCell>
-                            <TableCell className="text-sm">{r.organization_name}</TableCell>
+                            <TableCell className="text-sm">{r.org_name}</TableCell>
                             <TableCell>
-                                {linkedNGO ? (
-                                    <Badge variant={linkedNGO.verified_badge ? 'success' : 'warning'} className="text-xs">
-                                        {linkedNGO.name}
-                                    </Badge>
-                                ) : <span className="text-xs text-muted-foreground">—</span>}
+                                <span className="text-xs text-muted-foreground">—</span>
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">{r.created_at}</TableCell>
                             <TableCell>
@@ -79,7 +75,7 @@ export default function SuperRegistrations() {
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Reject Registration?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        Reject <strong>{r.full_name}</strong>'s application for <strong>{r.organization_name}</strong>? They will be notified.
+                                                        Reject <strong>{r.full_name}</strong>'s application for <strong>{r.org_name}</strong>? They will be notified.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>

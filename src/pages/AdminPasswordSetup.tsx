@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Building2, ArrowLeft, Eye, EyeOff, CheckCircle } from 'lucide-react'
+import { Building2, ArrowLeft, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
+import { signUp } from '@/lib/supabase'
 
 export default function AdminPasswordSetup() {
     const navigate = useNavigate()
@@ -13,6 +14,7 @@ export default function AdminPasswordSetup() {
     const [confirm, setConfirm] = useState('')
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     const strong = password.length >= 8
     const match = password === confirm && confirm.length > 0
@@ -21,7 +23,23 @@ export default function AdminPasswordSetup() {
         e.preventDefault()
         if (!strong || !match) return
         setLoading(true)
-        await new Promise(r => setTimeout(r, 700))
+        setError('')
+
+        const email = sessionStorage.getItem('aidly_signup_email')
+        if (!email) {
+            setError('Session expired. Please go back and re-submit your registration details.')
+            setLoading(false)
+            return
+        }
+
+        const { error: authError } = await signUp(email, password)
+        if (authError) {
+            setError(authError.message ?? 'Could not create your account. Please try again.')
+            setLoading(false)
+            return
+        }
+
+        sessionStorage.removeItem('aidly_signup_email')
         setLoading(false)
         navigate('/admin-pending-request')
     }
@@ -85,6 +103,12 @@ export default function AdminPasswordSetup() {
                                 {loading ? 'Setting password...' : 'Set Password & Submit'}
                             </Button>
                         </form>
+                        {error && (
+                            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                <AlertCircle className="h-4 w-4 shrink-0" />
+                                {error}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
                 <p className="text-xs text-center text-muted-foreground">

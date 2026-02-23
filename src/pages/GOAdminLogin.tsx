@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { Shield, ArrowLeft, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { signIn, signOut, supabase } from '@/lib/supabase'
 
 export default function GOAdminLogin() {
     const navigate = useNavigate()
@@ -14,11 +15,40 @@ export default function GOAdminLogin() {
     const [password, setPassword] = useState('')
     const [showPw, setShowPw] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     const handle = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        await new Promise(r => setTimeout(r, 700))
+        setError('')
+
+        const { data, error: authError } = await signIn(email, password)
+        if (authError || !data.user) {
+            setError('Invalid email or password.')
+            setLoading(false)
+            return
+        }
+
+        const { data: userRow } = await supabase
+            .from('users')
+            .select('role, is_suspended, is_active')
+            .eq('id', data.user.id)
+            .single()
+
+        if (!userRow || (userRow.role !== 'govt' && userRow.role !== 'govt_admin')) {
+            setError('No Government admin account found for this email.')
+            await signOut()
+            setLoading(false)
+            return
+        }
+
+        if (userRow.is_suspended || !userRow.is_active) {
+            setError('Your account has been suspended. Contact support.')
+            await signOut()
+            setLoading(false)
+            return
+        }
+
         setLoading(false)
         navigate('/gov/dashboard')
     }
@@ -59,6 +89,12 @@ export default function GOAdminLogin() {
                                 {loading ? 'Signing in...' : 'Sign In'}
                             </Button>
                         </form>
+                        {error && (
+                            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                <AlertCircle className="h-4 w-4 shrink-0" />
+                                {error}
+                            </div>
+                        )}
                     </CardContent>
                     <CardFooter className="flex-col gap-3">
                         <Separator />
@@ -70,9 +106,6 @@ export default function GOAdminLogin() {
                         </p>
                     </CardFooter>
                 </Card>
-                <Card className="bg-muted/40 border-dashed"><CardContent className="py-3 px-4">
-                    <p className="text-xs text-muted-foreground text-center"><span className="font-medium">Demo:</span> Any email & password works</p>
-                </CardContent></Card>
             </div>
         </div>
     )

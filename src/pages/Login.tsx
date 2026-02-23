@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Shield, Building2, Star, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { Shield, Building2, Star, ArrowLeft, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import { signIn, signOut, supabase } from '@/lib/supabase'
 
 const roleConfig = {
     govt: { label: 'Government Admin', icon: Shield, badge: 'Official', color: 'default' as const },
@@ -21,6 +22,7 @@ export default function Login() {
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     const config = roleConfig[role as keyof typeof roleConfig] ?? roleConfig.govt
     const Icon = config.icon
@@ -28,17 +30,52 @@ export default function Login() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        // Simulate auth delay
-        await new Promise(r => setTimeout(r, 800))
+        setError('')
+
+        const { data, error: authError } = await signIn(email, password)
+        if (authError || !data.user) {
+            setError('Invalid email or password.')
+            setLoading(false)
+            return
+        }
+
+        const { data: userRow, error: dbError } = await supabase
+            .from('users')
+            .select('role, is_suspended, is_active')
+            .eq('id', data.user.id)
+            .single()
+
+        if (dbError) {
+            console.error('[Login] users table query failed:', dbError)
+            setError(`DB error: ${dbError.message} (code: ${dbError.code})`)
+            await signOut()
+            setLoading(false)
+            return
+        }
+
+        if (!userRow) {
+            setError('Account not found. Contact your Super Admin.')
+            await signOut()
+            setLoading(false)
+            return
+        }
+
+        if (userRow.is_suspended || !userRow.is_active) {
+            setError('Your account has been suspended or deactivated.')
+            await signOut()
+            setLoading(false)
+            return
+        }
+
         setLoading(false)
 
-        if (role === 'super') {
-            navigate('/super/dashboard')
-        } else if (role === 'govt') {
-            navigate('/gov/dashboard')
-        } else {
-            navigate('/ngo/dashboard')
-        }
+        const r = userRow.role
+        if (role === 'super' && (r === 'super' || r === 'super_admin')) return navigate('/super/dashboard')
+        if (role === 'govt' && (r === 'govt' || r === 'govt_admin')) return navigate('/gov/dashboard')
+        if (role === 'ngo' && (r === 'ngo' || r === 'ngo_admin')) return navigate('/ngo/dashboard')
+
+        setError(`This login is for ${config.label} only.`)
+        await signOut()
     }
 
     return (
@@ -106,6 +143,12 @@ export default function Login() {
                                 {loading ? 'Signing in...' : 'Sign In'}
                             </Button>
                         </form>
+                        {error && (
+                            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                <AlertCircle className="h-4 w-4 shrink-0" />
+                                {error}
+                            </div>
+                        )}
                     </CardContent>
 
                     <CardFooter className="flex-col gap-3">
@@ -115,15 +158,6 @@ export default function Login() {
                             New registrations require offline verification and Super Admin approval.
                         </p>
                     </CardFooter>
-                </Card>
-
-                {/* Demo hint */}
-                <Card className="bg-muted/40 border-dashed">
-                    <CardContent className="py-3 px-4">
-                        <p className="text-xs text-muted-foreground text-center">
-                            <span className="font-medium">Demo:</span> Enter any email & password to continue
-                        </p>
-                    </CardContent>
                 </Card>
             </div>
         </div>

@@ -18,6 +18,10 @@ import PendingVerification from '@/pages/PendingVerification'
 // Layout
 import { AppShell } from '@/components/layout/AppShell'
 
+// Guards
+import ProtectedRoute from '@/routes/ProtectedRoute'
+import RoleRoute from '@/routes/RoleRoute'
+
 // Government Admin Pages
 import GovDashboard from '@/pages/gov/GovDashboard'
 import GovVolunteers from '@/pages/gov/GovVolunteers'
@@ -65,8 +69,14 @@ export default function App() {
         <Route path="/login/:role" element={<Login />} />
         <Route path="/pending" element={<PendingVerification />} />
 
-        {/* Government Admin */}
-        <Route path="/gov" element={<AppShell role="govt" />}>
+        {/* Government Admin — Protected */}
+        <Route path="/gov" element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={['govt']}>
+              <AppShell role="govt" />
+            </RoleRoute>
+          </ProtectedRoute>
+        }>
           <Route index element={<Navigate to="/gov/dashboard" replace />} />
           <Route path="dashboard" element={<GovDashboard />} />
           <Route path="volunteers" element={<GovVolunteers />} />
@@ -76,8 +86,14 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-        {/* NGO Admin */}
-        <Route path="/ngo" element={<AppShell role="ngo" />}>
+        {/* NGO Admin — Protected */}
+        <Route path="/ngo" element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={['ngo']}>
+              <AppShell role="ngo" />
+            </RoleRoute>
+          </ProtectedRoute>
+        }>
           <Route index element={<Navigate to="/ngo/dashboard" replace />} />
           <Route path="dashboard" element={<NgoDashboard />} />
           <Route path="volunteers" element={<NgoVolunteers />} />
@@ -86,8 +102,14 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-        {/* Super Admin */}
-        <Route path="/super" element={<AppShell role="super" />}>
+        {/* Super Admin — Protected */}
+        <Route path="/super" element={
+          <ProtectedRoute>
+            <RoleRoute allowedRoles={['super']}>
+              <AppShell role="super" />
+            </RoleRoute>
+          </ProtectedRoute>
+        }>
           <Route index element={<Navigate to="/super/dashboard" replace />} />
           <Route path="dashboard" element={<SuperDashboard />} />
           <Route path="ngo-management" element={<SuperNgoManagement />} />
