@@ -18,9 +18,9 @@ const alertTypeColors: Record<AlertType, 'destructive' | 'warning' | 'secondary'
     notice: 'secondary',
 }
 
-const emptyForm = { title: '', description: '', alert_type: 'disaster' as AlertType, official_url: '' }
+const emptyForm = { title: '', description: '', alert_type: 'notice' as AlertType, official_url: '' }
 
-export default function GovAlerts() {
+export default function NgoAlerts() {
     const { user } = useAuth()
     const [alerts, setAlerts] = useState<Alert[]>([])
     const [loading, setLoading] = useState(true)
@@ -71,8 +71,8 @@ export default function GovAlerts() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Alert Broadcasting</h2>
-                    <p className="text-muted-foreground">Create and manage official government notifications</p>
+                    <h2 className="text-2xl font-bold tracking-tight">Alerts</h2>
+                    <p className="text-muted-foreground">View and broadcast NGO community alerts</p>
                 </div>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
@@ -80,17 +80,17 @@ export default function GovAlerts() {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[540px]">
                         <DialogHeader>
-                            <DialogTitle>Create Official Alert</DialogTitle>
-                            <DialogDescription>Broadcast an official notification to Aidly users.</DialogDescription>
+                            <DialogTitle>Create NGO Alert</DialogTitle>
+                            <DialogDescription>Broadcast a community notification to Aidly users.</DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="space-y-2">
-                                <Label htmlFor="alert-title">Alert Title</Label>
-                                <Input id="alert-title" placeholder="e.g. Cyclone Warning — Coastal Odisha" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+                                <Label htmlFor="ngo-alert-title">Alert Title</Label>
+                                <Input id="ngo-alert-title" placeholder="e.g. Volunteer Drive — Flood Relief" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="alert-desc">Description</Label>
-                                <Textarea id="alert-desc" placeholder="Detailed description of the alert..." rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+                                <Label htmlFor="ngo-alert-desc">Description</Label>
+                                <Textarea id="ngo-alert-desc" placeholder="Detailed description..." rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Alert Type</Label>
@@ -104,8 +104,8 @@ export default function GovAlerts() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="official-url">Official URL (optional)</Label>
-                                <Input id="official-url" placeholder="https://ndma.gov.in/..." value={form.official_url} onChange={e => setForm(f => ({ ...f, official_url: e.target.value }))} />
+                                <Label htmlFor="ngo-official-url">Reference URL (optional)</Label>
+                                <Input id="ngo-official-url" placeholder="https://..." value={form.official_url} onChange={e => setForm(f => ({ ...f, official_url: e.target.value }))} />
                             </div>
                         </div>
                         <DialogFooter>
@@ -145,7 +145,7 @@ export default function GovAlerts() {
                                 <TableRow>
                                     <TableHead>Title</TableHead>
                                     <TableHead>Type</TableHead>
-                                    <TableHead>Official URL</TableHead>
+                                    <TableHead>Reference URL</TableHead>
                                     <TableHead>Created</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>

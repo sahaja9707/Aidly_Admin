@@ -67,11 +67,19 @@ def create_auth_user(email: str, password: str = "Aidly@2026!") -> str:
         })
         return res.user.id
     except Exception:
-        # User already exists — look up their ID
-        page = supabase.auth.admin.list_users()
-        for u in page:
-            if u.email == email:
-                return u.id
+        # User already exists — page through all users to find their ID
+        page_num = 1
+        while True:
+            page = supabase.auth.admin.list_users(page=page_num, per_page=1000)
+            users = getattr(page, "users", page)
+            if not users:
+                break
+            for u in users:
+                if u.email == email:
+                    return u.id
+            if len(users) < 1000:
+                break
+            page_num += 1
         raise RuntimeError(f"Could not find or create auth user: {email}")
 
 # ── Skills & Tags ─────────────────────────────────────────────────────────────
@@ -324,7 +332,7 @@ def seed_volunteers(ngos: list[dict], count: int = 35) -> list[dict]:
             "user_id": auth_id,
             "skills": skills,
             "crisis_tags": tags,
-            "badge": random.choice(["Bronze", "Silver", "Gold", None, None]),
+             "badge": None,  # NULL always passes check constraints; update once allowed values are known
             "duty_mode": random.choice([True, False]),
             "available_now": random.choice([True, True, False]),
             "govt_certified": govt_certified,
@@ -404,7 +412,7 @@ def seed_ratings(volunteers: list[dict], count: int = 60):
             continue
         ratings.append({
             "id": str(uuid.uuid4()),
-            "call_id": str(uuid.uuid4()),
+            "call_id": None,  # no calls table seeded; NULL skips FK constraint
             "rated_by": rater["id"],
             "rated_to": ratee["id"],
             "rating": random.randint(1, 5),

@@ -83,6 +83,7 @@ export interface Alert {
   title: string
   description: string
   alert_type: AlertType
+  issued_by?: string
   official_url?: string
   is_active: boolean
   expires_at: string

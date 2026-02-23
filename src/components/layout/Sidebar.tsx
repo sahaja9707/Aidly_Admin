@@ -28,6 +28,7 @@ const ngoNav: NavItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/ngo/dashboard' },
     { label: 'Volunteers', icon: Users, to: '/ngo/volunteers' },
     { label: 'Leaderboard', icon: Trophy, to: '/ngo/leaderboard' },
+    { label: 'Alerts', icon: Bell, to: '/ngo/alerts' },
     { label: 'Profile', icon: FileText, to: '/ngo/profile' },
     { label: 'Settings', icon: Settings, to: '/ngo/settings' },
 ]

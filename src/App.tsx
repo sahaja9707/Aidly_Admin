@@ -31,6 +31,7 @@ import GovProfile from '@/pages/gov/GovProfile'
 // NGO Admin Pages
 import NgoDashboard from '@/pages/ngo/NgoDashboard'
 import NgoVolunteers from '@/pages/ngo/NgoVolunteers'
+import NgoAlerts from '@/pages/ngo/NgoAlerts'
 import NgoProfile from '@/pages/ngo/NgoProfile'
 
 // Shared
@@ -98,6 +99,7 @@ export default function App() {
           <Route path="dashboard" element={<NgoDashboard />} />
           <Route path="volunteers" element={<NgoVolunteers />} />
           <Route path="leaderboard" element={<Leaderboard filterMode="ngo" />} />
+          <Route path="alerts" element={<NgoAlerts />} />
           <Route path="profile" element={<NgoProfile />} />
           <Route path="settings" element={<Settings />} />
         </Route>
